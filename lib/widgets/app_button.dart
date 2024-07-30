@@ -5,9 +5,11 @@ class AppButton extends StatelessWidget {
    AppButton({super.key,
     required this.name,
     required this.onClick,
+     this.isLoading = false,
   });
   final String name;
   final VoidCallback onClick;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class AppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: AppColors.mainColor,
         ),
-        child: Row(
+        child: isLoading ? Center(child: CircularProgressIndicator.adaptive(),) : Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

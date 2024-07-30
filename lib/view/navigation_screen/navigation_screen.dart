@@ -18,14 +18,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
     HomeScreen(),
     PaymentScreen(),
     TrackTime(),
+    TrackTime(),
   ];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.bgWhite,
 
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.mainColor,
         selectedItemColor: AppColors.textWhite,
         unselectedItemColor: AppColors.textWhite,
@@ -39,9 +41,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.home,color: Colors.white,),label: "HOME"),
             BottomNavigationBarItem(icon: Icon(Icons.payment,color: Colors.white,),label: "PAYMENT"),
             BottomNavigationBarItem(icon: Icon(Icons.timeline,color: Colors.white,),label: "TRACK TIME"),
+            BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.white,),label: "PROFILE"),
 
           ]
       ),
-    ));
+    );
   }
 }

@@ -1,8 +1,13 @@
+import 'package:employee_management_system/controller/working_controller.dart';
 import 'package:employee_management_system/utility/app_color.dart';
+import 'package:employee_management_system/view/home_screen/clock_success.dart';
 import 'package:employee_management_system/view/home_screen/my_earning.dart';
 import 'package:employee_management_system/view/home_screen/track_work_time.dart';
 import 'package:employee_management_system/widgets/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_analog_clock/flutter_analog_clock.dart';
+import 'package:holdable_button/holdable_button.dart';
+import 'package:scale_button/scale_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,9 +19,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List _trackingList = ["Day One","Day Two","Day Three"];
   String? selected;
+
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.bgWhite,
       appBar: AppBar(
         leading: InkWell(
@@ -59,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(20),
               width:double.infinity ,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -69,23 +76,51 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Center(
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      child: AnalogClock(
+                        dateTime: DateTime.now(),
+                        isKeepTime: true,
+                        dialColor: Colors.white,
+                        dialBorderColor: Colors.black,
+                        dialBorderWidthFactor: 0.02,
+                        markingColor: Colors.black,
+                        markingRadiusFactor: 1.0,
+                        markingWidthFactor: 1.0,
+                        hourNumberColor: Colors.black,
+                        hourNumbers: const ['', '', '3', '', '', '6', '', '', '9', '', '', '12'],
+                        hourNumberSizeFactor: 1.0,
+                        hourNumberRadiusFactor: 1.0,
+                        hourHandColor: Colors.black,
+                        hourHandWidthFactor: 1.0,
+                        hourHandLengthFactor: 1.0,
+                        minuteHandColor: Colors.black,
+                        minuteHandWidthFactor: 1.0,
+                        minuteHandLengthFactor: 1.0,
+                        secondHandColor: Colors.black,
+                        secondHandWidthFactor: 1.0,
+                        secondHandLengthFactor: 1.0,
+                        centerPointColor: Colors.black,
+                        centerPointWidthFactor: 1.0,
+                      ),
+                    ),
+                  ),
 
 
                   //Today:05:03 AM date time
-                  Text("Today",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,color: AppColors.textBlack),),
-                  Text("05:03 AM",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: AppColors.textBlack),),
                    SizedBox(height: 30,),
 
                   //Today Total work
                   Center(child: Text("Today Total work",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16,color: AppColors.textBlack),)),
                   Center(child: Text("07:15",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 40,color: AppColors.textBlack),)),
-                  SizedBox(height: 30,),
 
 
                   //DropDown  View full day tracking
                   Center(
-                    child: SizedBox(
-                      width: 210,
+                    child: Container(
+                      margin: EdgeInsets.all(30),
                       child: CustomDropDown(
                           items: _trackingList,
                           hint: "View full day tracking",
@@ -97,44 +132,53 @@ class _HomeScreenState extends State<HomeScreen> {
                           }),
                     ),
                   ),
-                  SizedBox(height: 20,),
 
                 ],
               ),
             ),
-            SizedBox(height: 50,),
+            SizedBox(height: 30,),
 
-
-
-            //Clocking Button
             Center(
-              child: GestureDetector(
-                onTap: (){},
-                child: Container(
-                  height: 110,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.teal.shade100,
-                  ),
-                  child: Center(
-                    child: Container(
-                      height: 80,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.mainColor,
-                      ),
-                      child: Center(child: Text("Clock In",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: AppColors.textWhite),),),
-                    ),
+              child: HoldableButton(
+                height: 110,
+                width: 110,
+                resetAfterFinish: true,
+                buttonColor: AppColors.mainColor,
+                loadingColor: AppColors.mainColor.withOpacity(0.5),
+                radius: 100,
+                duration: 2,
+                startPoint: 0.25,
+                onConfirm: () {
+                  //clock in
+                  clockIn();
+                  // Callback when animation completes
+                },
+                strokeWidth: 30,
+                child: _isLoading ? Center(child: CircularProgressIndicator.adaptive(),) : Text('Clocking',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    color: Colors.white
                   ),
                 ),
               ),
-            )
+            ),
+            SizedBox(height: 30,),
+            Center(child: Text("Press & hold to Clocking"),)
 
           ],
         ),
       ),
-    ));
+    );
+  }
+
+  bool _isLoading = false;
+  clockIn() async{
+    setState(()=>_isLoading = true );
+    var res = await WorkingController.clocking();
+    if(res){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>ClockingSuccess()));
+    }
+    setState(()=>_isLoading = false );
   }
 }

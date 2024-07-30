@@ -33,7 +33,12 @@ class AppInput extends StatelessWidget {
       readOnly:readOnly ,
       obscureText:obscureText ,
       controller:controller ,
-      validator: validator,
+      validator: (v){
+        if(v!.isEmpty){
+          return "Filed must not be empty";
+        }
+        return null;
+      },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(left: 15,),
         filled: true,
