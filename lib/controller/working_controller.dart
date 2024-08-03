@@ -91,7 +91,16 @@ class WorkingController{
   static Future<SaleryModel> getMySalary(month, year)async{
     SharedPreferences _pref = await SharedPreferences.getInstance();
     var id = _pref.getString("user_id");
-    var res = await ApiService.getApi(url: AppConfig.MY_SALARY+"?month=$month&year=$year&employeeID=$id");
+    print("adfdasfsd- ${AppConfig.MY_SALARY+"$id?month=$month&year=$year"}");
+    var res = await ApiService.getApi(url: AppConfig.MY_SALARY+"$id?month=$month&year=$year");
+    print("res -- ${res.statusCode}");
+    return SaleryModel.fromJson(jsonDecode(res.body));
+  }
+  //get my salary
+  static Future<SaleryModel> getTotalHours()async{
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var id = _pref.getString("user_id");
+    var res = await ApiService.getApi(url: AppConfig.MY_SALARY+"$id");
     return SaleryModel.fromJson(jsonDecode(res.body));
   }
 

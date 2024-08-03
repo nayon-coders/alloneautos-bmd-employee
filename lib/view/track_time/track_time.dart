@@ -52,6 +52,13 @@ class _TrackTimeState extends State<TrackTime> {
     super.initState();
     _getAllWorkingHours = getTotalWork();
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _showDate();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(

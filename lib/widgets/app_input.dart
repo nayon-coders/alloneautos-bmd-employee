@@ -13,6 +13,8 @@ class AppInput extends StatelessWidget {
     this.obscureText = false,
     this.validator,
     this.textType,
+    this.onClick,
+    this.maxLine = 1
 
   });
   final String hint;
@@ -23,11 +25,15 @@ class AppInput extends StatelessWidget {
   final bool readOnly;
   final bool obscureText;
   final TextInputType?textType;
+  final VoidCallback? onClick;
+  final int maxLine;
 
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onClick,
+      maxLines: maxLine,
       keyboardType:textType,
       style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13,color:Colors.black),
       readOnly:readOnly ,

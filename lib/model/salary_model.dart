@@ -12,10 +12,10 @@ class SaleryModel {
   final bool? success;
   final String? message;
   final String? totalEarningsHours;
-  final dynamic totalAmount;
-  final int? totalPayment;
-  final dynamic dueAmount;
-  final List<AmountDatum>? amountData;
+  final double? totalAmount;
+  final double? totalPayment;
+  final double? dueAmount;
+  final List<PaymentDetails>? data;
 
   SaleryModel({
     this.success,
@@ -24,17 +24,17 @@ class SaleryModel {
     this.totalAmount,
     this.totalPayment,
     this.dueAmount,
-    this.amountData,
+    this.data,
   });
 
   factory SaleryModel.fromJson(Map<String, dynamic> json) => SaleryModel(
     success: json["success"],
     message: json["message"],
     totalEarningsHours: json["totalEarningsHours"],
-    totalAmount: json["totalAmount"],
-    totalPayment: json["totalPayment"],
-    dueAmount: json["dueAmount"],
-    amountData: json["amountData"] == null ? [] : List<AmountDatum>.from(json["amountData"]!.map((x) => AmountDatum.fromJson(x))),
+    totalAmount: json["totalAmount"]?.toDouble(),
+    totalPayment: json["totalPayment"]?.toDouble(),
+    dueAmount: json["dueAmount"]?.toDouble(),
+    data: json["data"] == null ? [] : List<PaymentDetails>.from(json["data"]!.map((x) => PaymentDetails.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,54 +44,54 @@ class SaleryModel {
     "totalAmount": totalAmount,
     "totalPayment": totalPayment,
     "dueAmount": dueAmount,
-    "amountData": amountData == null ? [] : List<dynamic>.from(amountData!.map((x) => x.toJson())),
+    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
   };
 }
 
-class AmountDatum {
+class PaymentDetails {
   final int? id;
-  final int? employeeId;
-  final DateTime? startTime;
-  final DateTime? endTime;
-  final DateTime? date;
-  final String? totalHours;
-  final String? salaryRate;
+  final String? employeeId;
   final String? amount;
+  final String? payBy;
+  final String? checkNo;
+  final String? date;
   final int? busnId;
+  final String? salaryRate;
+  final String? employeeName;
 
-  AmountDatum({
+  PaymentDetails({
     this.id,
     this.employeeId,
-    this.startTime,
-    this.endTime,
-    this.date,
-    this.totalHours,
-    this.salaryRate,
     this.amount,
+    this.payBy,
+    this.checkNo,
+    this.date,
     this.busnId,
+    this.salaryRate,
+    this.employeeName,
   });
 
-  factory AmountDatum.fromJson(Map<String, dynamic> json) => AmountDatum(
+  factory PaymentDetails.fromJson(Map<String, dynamic> json) => PaymentDetails(
     id: json["id"],
     employeeId: json["employeeID"],
-    startTime: json["start_time"] == null ? null : DateTime.parse(json["start_time"]),
-    endTime: json["end_time"] == null ? null : DateTime.parse(json["end_time"]),
-    date: json["date"] == null ? null : DateTime.parse(json["date"]),
-    totalHours: json["total_hours"],
-    salaryRate: json["salaryRate"],
     amount: json["amount"],
+    payBy: json["payBy"],
+    checkNo: json["check_no"],
+    date: json["date"].toString(),
     busnId: json["busn_id"],
+    salaryRate: json["salaryRate"],
+    employeeName: json["employeeName"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "employeeID": employeeId,
-    "start_time": startTime?.toIso8601String(),
-    "end_time": endTime?.toIso8601String(),
-    "date": "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",
-    "total_hours": totalHours,
-    "salaryRate": salaryRate,
     "amount": amount,
+    "payBy": payBy,
+    "check_no": checkNo,
+    "date": date,
     "busn_id": busnId,
+    "salaryRate": salaryRate,
+    "employeeName": employeeName,
   };
 }

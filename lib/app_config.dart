@@ -19,5 +19,13 @@ class AppConfig{
   static const String CLOCKING = "$BASE_URL/work-time/start";
   static const String CLOCKOUT = "$BASE_URL/work-time/end";
   static const String CHECK_PIN = "$BASE_URL/employee/check";
-  static const String MY_SALARY = "$BASE_URL/salary/all";
+  static const String MY_SALARY = "$BASE_URL/salary/my-earnings/";
+
+
+
+  static const String SINGLE_ADMIN_UPDATE = "$BASE_URL/employee/new-admin/update/";
+  static const String SINGLE_ADMIN_PASS_CHANGE = "$BASE_URL/employee/new-admin/update-password/";
+  static const String EMPLOYEE_PASSWORD = "$BASE_URL/employee/update-password/"; //DELETE PASS ID
+
+
 }

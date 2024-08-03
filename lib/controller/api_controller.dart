@@ -37,9 +37,10 @@ class ApiService{
 
     var response = await http.put(
       Uri.parse(url),
-      body: body,
+      body: jsonEncode(body),
       headers: {
-        "Authorization" : "Bearer $token"
+        "Authorization" : "Bearer $token",
+        "Content-Type" : "application/json"
       }
     );
     print("URL --- $url");
@@ -67,7 +68,7 @@ class ApiService{
       Uri.parse(url),
       headers: {
         "Authorization" : "Bearer $token",
-        'Content-Type': 'application/json; charset=UTF-8',
+       // 'Content-Type': 'application/json; charset=UTF-8',
       }
     );
     return response;

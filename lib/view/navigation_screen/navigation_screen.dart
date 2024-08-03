@@ -7,7 +7,8 @@ import '../../utility/app_color.dart';
 import '../profile/profiles.dart';
 
 class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({super.key});
+  final int index;
+  const NavigationScreen({super.key,  this.index = 0});
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -21,6 +22,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     TrackTime(),
     Profile(),
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _currentIndex  = widget.index;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

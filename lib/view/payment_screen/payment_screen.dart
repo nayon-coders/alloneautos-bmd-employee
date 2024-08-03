@@ -2,6 +2,7 @@ import 'package:employee_management_system/controller/working_controller.dart';
 import 'package:employee_management_system/model/salary_model.dart';
 import 'package:employee_management_system/utility/app_color.dart';
 import 'package:employee_management_system/utility/app_const.dart';
+import 'package:employee_management_system/view/payment_screen/widgets/payment_details.dart';
 import 'package:employee_management_system/widgets/empty_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _showDate();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
       backgroundColor: AppColors.bgWhite,
@@ -86,7 +94,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 //Date
                 SizedBox(
                     width:100,
@@ -132,12 +139,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 return Center(child: CircularProgressIndicator.adaptive(),);
               }
 
-              return snapshot.data!.amountData!.isNotEmpty ? Expanded(
-                flex: snapshot.data!.amountData!.length,
+              return snapshot.data!.data!.isNotEmpty ? Expanded(
+                flex: snapshot.data!.data!.length,
                 child: ListView.builder(
-                    itemCount: 5,
+                    itemCount: snapshot.data!.data!.length,
                     itemBuilder: (_,index){
-                      var data = snapshot.data!.amountData![index];
+                      var data = snapshot.data!.data![index];
 
                       
                       return Container(
@@ -166,7 +173,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text("${convertUSADate(data.date)}",style: TextStyle(fontWeight: FontWeight.w500,fontSize:14,color: AppColors.mainColor ),),
+                                  Text("${data.date}",style: TextStyle(fontWeight: FontWeight.w500,fontSize:14,color: AppColors.mainColor ),),
                                 ],
                               ),
                             ),
@@ -192,7 +199,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             //Status
                             SizedBox(
                                 width:80,
-                                child: Text("Finish",
+                                child: Text("Paid",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -204,7 +211,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             SizedBox(
                                 width: 80,
                                 child:IconButton(
-                                    onPressed: (){},
+                                    onPressed: (){
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return PaymentSheet(paymentDetails: data,);
+                                      }
+                                    );
+                                    },
                                     icon: Icon(Icons.visibility_outlined,color: AppColors.textBlack,),
                                 ),
                             ),
