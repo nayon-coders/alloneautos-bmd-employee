@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:employee_management_system/app_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -13,7 +16,7 @@ class ApiService{
 
     var response = await http.post(
       Uri.parse(url),
-      body: body,
+      body: jsonEncode(body),
       headers: {
         "Authorization" : "Bearer $token",
         "Content-Type" : "application/json"
@@ -28,10 +31,21 @@ class ApiService{
 
   //put api
   static Future<http.Response> putApi({required String url, required Map<String, dynamic> body})async{
+
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var token = _pref.getString("token");
+
     var response = await http.put(
       Uri.parse(url),
       body: body,
+      headers: {
+        "Authorization" : "Bearer $token"
+      }
     );
+    print("URL --- $url");
+    print("Response ---- ${response.statusCode}");
+    print("Response ---- ${response.body}");
+
     return response;
   }
 
@@ -47,10 +61,17 @@ class ApiService{
 
   //get api
   static Future<http.Response> getApi({required String url})async{
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var token = _pref.getString("token");
     var response = await http.get(
       Uri.parse(url),
+      headers: {
+        "Authorization" : "Bearer $token",
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
     );
     return response;
   }
+  
 
 }

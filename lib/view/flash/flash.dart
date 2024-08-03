@@ -37,7 +37,7 @@ class _FlashState extends State<Flash> {
     });
 
     //check token is null or not
-    if(token == null){
+    if(token != null){
       //is not null, then redirect to the Navigation screen
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>PINScreen()), (route) => false);
     }else{

@@ -6,7 +6,6 @@ import 'package:employee_management_system/view/auth/pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 
 import '../view/navigation_screen/navigation_screen.dart';
 
@@ -62,6 +61,25 @@ class AuthController{
    _pref.remove("token");
    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)), (route) => false);
   }
+
+
+
+ //PIN VERIFICATION
+ static Future<bool> pinVerification(pin)async{
+   print("pin --- ${pin}");
+   var res = await ApiService.postApi(
+       url: AppConfig.CHECK_PIN,
+       body: {
+         "reqEmailPin": pin
+       }
+   );
+   if(res.statusCode == 200){
+     return true;
+   }else{
+     return false;
+   }
+ }
+
 
 
 

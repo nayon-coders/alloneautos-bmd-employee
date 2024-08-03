@@ -15,6 +15,9 @@ class AppConfig{
 
 
   static const String WORKING_HOURS = "$BASE_URL/work-time/all?employeeID=";
+  static const String TODAY_WORKING = "$BASE_URL/work-time/today";
   static const String CLOCKING = "$BASE_URL/work-time/start";
   static const String CLOCKOUT = "$BASE_URL/work-time/end";
+  static const String CHECK_PIN = "$BASE_URL/employee/check";
+  static const String MY_SALARY = "$BASE_URL/salary/all";
 }

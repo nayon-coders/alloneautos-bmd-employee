@@ -1,6 +1,5 @@
 import 'package:employee_management_system/view/flash/flash.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 void main(){
 
   runApp(MyApp());

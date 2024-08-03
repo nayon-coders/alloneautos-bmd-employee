@@ -1,5 +1,12 @@
+import 'package:employee_management_system/controller/working_controller.dart';
+import 'package:employee_management_system/model/salary_model.dart';
 import 'package:employee_management_system/utility/app_color.dart';
+import 'package:employee_management_system/utility/app_const.dart';
+import 'package:employee_management_system/widgets/empty_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -9,26 +16,48 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+
+
+  Future<SaleryModel> ? _getAllSalery;
+
+  var month = DateFormat("MM").format(DateTime.now());
+  var year = DateFormat("yyyy").format(DateTime.now());
+  var selectedDate = DateTime.now();
+
+
   Future _showDate()async{
-    await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2100));
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        month = picked.month.toString();
+        print(".... month --- ${month}");
+
+        year = picked.year.toString();
+        print(".... year --- ${year}");
+      });
+    _getAllSalery = WorkingController.getMySalary(month, year);
+
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getAllSalery = WorkingController.getMySalary(month, year);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
       backgroundColor: AppColors.bgWhite,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        // leading: IconButton(
-        //   onPressed: ()=>Navigator.pop(context),
-        //   icon: Icon(Icons.arrow_back,color: AppColors.mainColor,),
-        // ),
-
-
-
         title: Text("Payment  History",
           style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -60,7 +89,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                 //Date
                 SizedBox(
-                    width:40,
+                    width:100,
                     child: Text("Date",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: AppColors.textWhite),
@@ -96,83 +125,95 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
           ),
-          Expanded(
-            flex: 10,
-            child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (_,index){
-                  return Container(
-                    padding: EdgeInsets.only(left: 10,right: 10),
+          FutureBuilder(
+            future: _getAllSalery,
+            builder: (context, snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator.adaptive(),);
+              }
 
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: AppColors.textWhite,
-                        border: Border.symmetric(
-                          vertical: BorderSide.none,
-                          horizontal: BorderSide(color: Colors.grey.shade200),
-                        )
+              return snapshot.data!.amountData!.isNotEmpty ? Expanded(
+                flex: snapshot.data!.amountData!.length,
+                child: ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (_,index){
+                      var data = snapshot.data!.amountData![index];
 
-                    ),
+                      
+                      return Container(
+                        padding: EdgeInsets.only(left: 10,right: 10),
 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-
-
-                        //Date
-                        Container(
-                          padding: EdgeInsets.only(left: 8,right: 8,top: 5,bottom: 5),
-                          margin: EdgeInsets.only(top: 10,bottom: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.teal.shade100,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("12",style: TextStyle(fontWeight: FontWeight.w500,fontSize:14,color: AppColors.mainColor ),),
-                              Text("Jun",style: TextStyle(fontWeight: FontWeight.w600,fontSize:14,color: AppColors.textBlack ),),
-                            ],
-                          ),
-                        ),
-
-                        //Pay
-                        SizedBox(
-                            width: 80,
-                            child: Text("\$75",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: AppColors.textWhite,
+                            border: Border.symmetric(
+                              vertical: BorderSide.none,
+                              horizontal: BorderSide(color: Colors.grey.shade200),
                             )
+
                         ),
 
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
 
-                        //Status
-                        SizedBox(
-                            width:80,
-                            child: Text("Finish",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.mainColor),
-                            )
-                        ),
 
-                        //Info
-                        SizedBox(
-                            width: 80,
-                            child:IconButton(
-                                onPressed: (){},
-                                icon: Icon(Icons.visibility_outlined,color: AppColors.textBlack,),
+                            //Date
+                            Container(
+                              width: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("${convertUSADate(data.date)}",style: TextStyle(fontWeight: FontWeight.w500,fontSize:14,color: AppColors.mainColor ),),
+                                ],
+                              ),
                             ),
+
+                            //Pay
+                            Container(
+                              width: 100,
+                                padding: EdgeInsets.only(left: 8,right: 8,top: 5,bottom: 5),
+                                margin: EdgeInsets.only(top: 10,bottom: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.teal.shade100,
+                                ),
+                                child: Text("\$${data.amount}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textBlack),
+                                )
+                            ),
+
+
+                            //Status
+                            SizedBox(
+                                width:80,
+                                child: Text("Finish",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.mainColor),
+                                )
+                            ),
+
+                            //Info
+                            SizedBox(
+                                width: 80,
+                                child:IconButton(
+                                    onPressed: (){},
+                                    icon: Icon(Icons.visibility_outlined,color: AppColors.textBlack,),
+                                ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }),
+                      );
+                    }),
+              ) : EmptyScreen();
+            }
           )
         ],
       ),

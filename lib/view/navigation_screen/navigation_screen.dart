@@ -4,6 +4,7 @@ import 'package:employee_management_system/view/track_time/track_time.dart';
 import 'package:flutter/material.dart';
 
 import '../../utility/app_color.dart';
+import '../profile/profiles.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -18,7 +19,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     HomeScreen(),
     PaymentScreen(),
     TrackTime(),
-    TrackTime(),
+    Profile(),
   ];
   @override
   Widget build(BuildContext context) {

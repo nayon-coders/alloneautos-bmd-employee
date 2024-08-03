@@ -1,3 +1,4 @@
+import 'package:employee_management_system/controller/auth_controller.dart';
 import 'package:employee_management_system/utility/app_color.dart';
 import 'package:employee_management_system/view/navigation_screen/navigation_screen.dart';
 import 'package:employee_management_system/widgets/app_button.dart';
@@ -16,6 +17,9 @@ class PINScreen extends StatefulWidget {
 class _PINScreenState extends State<PINScreen> {
 
   var vefiryCode;
+
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,15 +54,7 @@ class _PINScreenState extends State<PINScreen> {
                 color: AppColors.textBlack),
           ),
         ),
-        SizedBox(height: 20,),
-        Text(
-          "We are sorry to say. Out Pin Verification api is not ready. Please use 1234 as for now",
-          style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
-              color: Colors.red),
-        ),
+
         SizedBox(
           height: 60,
         ),
@@ -78,12 +74,10 @@ class _PINScreenState extends State<PINScreen> {
             },
             //runs when every textfield is filled
             onSubmit: (String verificationCode){
-              if(verificationCode == "1234"){
                 setState(() {
-                  vefiryCode = "1234";
+                  vefiryCode = verificationCode;
                 });
                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NavigationScreen()), (route) => false);
-              }
               // showDialog(
               //     context: context,
               //     builder: (context){
@@ -101,15 +95,41 @@ class _PINScreenState extends State<PINScreen> {
           ),
 
           //Button
-          bottomNavigationBar: Padding(
-    padding: const EdgeInsets.all(15.0),
-    child: AppButton(
-        name: "Continue",
-        onClick: (){
-            if(vefiryCode == "1234"){
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NavigationScreen()), (route) => false);
-            }
-    }
-        )));
+          bottomNavigationBar: Container(
+          padding: const EdgeInsets.all(15.0),
+          margin: const EdgeInsets.all(15.0),
+          child: AppButton(
+            isLoading: _isLoading,
+              name: "Continue",
+              onClick: ()async{
+
+              if(vefiryCode != null){
+                setState(() => _isLoading = true);
+                var res = await AuthController.pinVerification(vefiryCode);
+                if(res){
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NavigationScreen()), (route) => false);
+                } else{
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Your pin is not correct"),
+                    duration: Duration(milliseconds: 1500),
+                    backgroundColor: Colors.red,
+                  ));
+                }
+                setState(() => _isLoading = false);
+              }else{
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("PIN must not be empty."),
+                  duration: Duration(milliseconds: 1500),
+                  backgroundColor: Colors.red,
+                ));
+              }
+
+
+
+                  // if(vefiryCode == "1234"){
+                  // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NavigationScreen()), (route) => false);
+                  // }
+          }
+              )));
   }
 }
